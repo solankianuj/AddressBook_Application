@@ -10,4 +10,5 @@ public class AddressBookDTO {
     private String city;
     private String state;
     private int zipcode;
+    private long phoneNumber;
 }

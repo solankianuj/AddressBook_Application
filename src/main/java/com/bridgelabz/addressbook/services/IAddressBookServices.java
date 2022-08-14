@@ -4,9 +4,12 @@ import com.bridgelabz.addressbook.dto.AddressBookDTO;
 import com.bridgelabz.addressbook.model.AddressBookModel;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 public interface IAddressBookServices {
-    AddressBookModel seeAddressBook();
+    List<AddressBookModel> seeAddressBook();
     AddressBookModel addingAddress(AddressBookDTO addressBookDTO);
-    AddressBookModel updateAddress(long phoneNumber ,AddressBookDTO addressBookDTO );
-    AddressBookModel deleteAddress(long phoneNumber);
+    AddressBookModel updateAddress(int id ,AddressBookDTO addressBookDTO );
+    AddressBookModel getAddress(int id);
+    List<AddressBookModel>  deleteAddress(long phoneNumber);
 }

@@ -4,46 +4,53 @@ import com.bridgelabz.addressbook.dto.AddressBookDTO;
 import com.bridgelabz.addressbook.model.AddressBookModel;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 public class AddressBookServices implements  IAddressBookServices{
 
-    @Override
-    public AddressBookModel seeAddressBook() {
-        AddressBookDTO addressBookDTO=new AddressBookDTO();
-        addressBookDTO.setFullName("Anuj Solanki");
-        addressBookDTO.setAddress("vijay Nagar");
-        addressBookDTO.setCity("Indore");
-        addressBookDTO.setZipcode(465447);
-        addressBookDTO.setState("MP");
-        AddressBookModel addressBookModel=new AddressBookModel(7987359946l, addressBookDTO);
+    List<AddressBookModel> addressBookModelList=new ArrayList<>();
 
-        return addressBookModel;
+    @Override
+    public List<AddressBookModel> seeAddressBook() {
+
+        return addressBookModelList;
     }
 
     @Override
     public AddressBookModel addingAddress(AddressBookDTO addressBookDTO) {
-        AddressBookModel addressBookModel=new AddressBookModel(7389829296l, addressBookDTO);
-
+        AddressBookModel addressBookModel=new AddressBookModel(addressBookModelList.size()+1,addressBookDTO);
+        addressBookModelList.add(addressBookModel);
         return addressBookModel;
     }
 
     @Override
-    public AddressBookModel updateAddress(long phoneNumber, AddressBookDTO addressBookDTO) {
-        AddressBookModel addressBookModel=new AddressBookModel(phoneNumber, addressBookDTO);
-
+    public AddressBookModel updateAddress(int id, AddressBookDTO addressBookDTO) {
+       AddressBookModel addressBookModel= this.getAddress(id);
+       addressBookModel.setFullName(addressBookDTO.getFullName());
+       addressBookModel.setAddress(addressBookDTO.getAddress());
+        addressBookModel.setCity(addressBookDTO.getCity());
+        addressBookModel.setState(addressBookDTO.getState());
+        addressBookModel.setZipcode(addressBookDTO.getZipcode());
+        addressBookModel.setPhoneNumber(addressBookDTO.getPhoneNumber());
+        
         return addressBookModel;
     }
 
     @Override
-    public AddressBookModel deleteAddress(long phoneNumber) {
-        AddressBookDTO addressBookDTO=new AddressBookDTO();
-        addressBookDTO.setFullName("Anuj Solanki");
-        addressBookDTO.setAddress("vijay Nagar");
-        addressBookDTO.setCity("Indore");
-        addressBookDTO.setZipcode(465447);
-        addressBookDTO.setState("MP");
-        AddressBookModel addressBookModel=new AddressBookModel(phoneNumber, addressBookDTO);
+    public AddressBookModel getAddress(int id) {
+        List<AddressBookModel>  addressBookModelList1 = addressBookModelList.stream().filter(x-> x.getAddressId()==id).collect(Collectors.toList());
 
-        return addressBookModel;
+        return addressBookModelList1.get(0);
+    }
+
+
+    @Override
+    public List<AddressBookModel> deleteAddress(long phoneNumber) {
+         addressBookModelList= addressBookModelList.stream().filter(x-> x.getPhoneNumber()!=phoneNumber).collect(Collectors.toList());
+        return addressBookModelList;
     }
 }
