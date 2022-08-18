@@ -1,56 +1,61 @@
 package com.bridgelabz.addressbook.services;
 
 import com.bridgelabz.addressbook.dto.AddressBookDTO;
+import com.bridgelabz.addressbook.exception.AddressNotFound;
 import com.bridgelabz.addressbook.model.AddressBookModel;
+import com.bridgelabz.addressbook.repository.IAddressBookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 @Service
 public class AddressBookServices implements  IAddressBookServices{
-
-    List<AddressBookModel> addressBookModelList=new ArrayList<>();
+    @Autowired
+    IAddressBookRepository addressBookRepository;
 
     @Override
-    public List<AddressBookModel> seeAddressBook() {
+    public  List<AddressBookModel> seeAddressBook() {
+        List<AddressBookModel> address=addressBookRepository.findAll();
 
-        return addressBookModelList;
+        return address;
     }
 
     @Override
     public AddressBookModel addingAddress(AddressBookDTO addressBookDTO) {
-        AddressBookModel addressBookModel=new AddressBookModel(addressBookModelList.size()+1,addressBookDTO);
-        addressBookModelList.add(addressBookModel);
+        AddressBookModel addressBookModel=new AddressBookModel(addressBookDTO);
+        addressBookRepository.save(addressBookModel);
         return addressBookModel;
     }
 
     @Override
     public AddressBookModel updateAddress(int id, AddressBookDTO addressBookDTO) {
-       AddressBookModel addressBookModel= this.getAddress(id);
-       addressBookModel.setFullName(addressBookDTO.getFullName());
-       addressBookModel.setAddress(addressBookDTO.getAddress());
+        AddressBookModel addressBookModel=this.getAddress(id);
+
+        addressBookModel.setFullName(addressBookDTO.getFullName());
+        addressBookModel.setAddress(addressBookDTO.getAddress());
         addressBookModel.setCity(addressBookDTO.getCity());
         addressBookModel.setState(addressBookDTO.getState());
         addressBookModel.setZipcode(addressBookDTO.getZipcode());
         addressBookModel.setPhoneNumber(addressBookDTO.getPhoneNumber());
-        
-        return addressBookModel;
+        addressBookRepository.save(addressBookModel);
+           return addressBookModel;
     }
 
     @Override
     public AddressBookModel getAddress(int id) {
-        List<AddressBookModel>  addressBookModelList1 = addressBookModelList.stream().filter(x-> x.getAddressId()==id).collect(Collectors.toList());
-
-        return addressBookModelList1.get(0);
+        Optional<AddressBookModel> address=addressBookRepository.findById(id);
+        if (address.isPresent()){
+            return address.get();
+        }
+        throw new AddressNotFound(400,"Address Not Found !");
     }
 
-
     @Override
-    public List<AddressBookModel> deleteAddress(long phoneNumber) {
-         addressBookModelList= addressBookModelList.stream().filter(x-> x.getPhoneNumber()!=phoneNumber).collect(Collectors.toList());
-        return addressBookModelList;
+    public void deleteAddress(int id) {
+        AddressBookModel addressBookModel=this.getAddress(id);
+        addressBookRepository.delete(addressBookModel);
+
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 public interface IAddressBookServices {
-    List<AddressBookModel> seeAddressBook();
-    AddressBookModel addingAddress(AddressBookDTO addressBookDTO);
-    AddressBookModel updateAddress(int id ,AddressBookDTO addressBookDTO );
-    AddressBookModel getAddress(int id);
-    List<AddressBookModel>  deleteAddress(long phoneNumber);
+        List<AddressBookModel> seeAddressBook();
+        AddressBookModel addingAddress(AddressBookDTO addressBookDTO);
+        AddressBookModel updateAddress(int id ,AddressBookDTO addressBookDTO );
+        AddressBookModel getAddress(int id);
+         void deleteAddress(int id);
 }
