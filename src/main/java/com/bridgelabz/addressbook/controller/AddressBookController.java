@@ -6,6 +6,7 @@ import com.bridgelabz.addressbook.services.IAddressBookServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,14 +21,18 @@ public class AddressBookController {
            return iAddressBookServices.seeAddressBook();
         }
 
-
-
-        @RequestMapping(value = "/creatingAddress" )
-        public AddressBookModel addingAddress(@RequestBody AddressBookDTO addressBookDTO) {
+        @PostMapping(value = "/creatingAddress" )
+        public AddressBookModel addingAddress(@Valid @RequestBody AddressBookDTO addressBookDTO) {
 
            return iAddressBookServices.addingAddress(addressBookDTO);
 
         }
+        @GetMapping(value = { "/getaddress/{id}"})
+        public AddressBookModel seeAddressBook(@PathVariable int id){
+
+            return iAddressBookServices.getAddress(id);
+        }
+
 
         @PutMapping("/updateAdress")
         public AddressBookModel updateAddress(@RequestBody AddressBookDTO addressBookDTO , @RequestParam(value = "id") int id) {
@@ -35,10 +40,10 @@ public class AddressBookController {
            return iAddressBookServices.updateAddress(id,addressBookDTO);
         }
 
-        @DeleteMapping("/deleteAddress/{phoneNumber}")
-        public  List<AddressBookModel>  deleteAddress(@PathVariable long phoneNumber) {
+        @DeleteMapping("/deleteAddress/{id}")
+        public  void deleteAddress(@PathVariable int id) {
 
-            return iAddressBookServices.deleteAddress(phoneNumber);
+             iAddressBookServices.deleteAddress(id);
     }
 
 }
